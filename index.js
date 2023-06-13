@@ -40,6 +40,13 @@ async function run() {
         res.send(result);
     })
 
+    app.post('/activities', async(req, res)=>{
+        const activity = req.body;
+        
+        const result = await activitiesCollection.insertOne(activity);
+        res.send(result)
+    } )
+
 
     // Send a ping to confirm a successful connection
     await client.db("admin").command({ ping: 1 });
