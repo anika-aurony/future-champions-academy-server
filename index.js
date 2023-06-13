@@ -55,7 +55,8 @@ async function run() {
         const options = {upsert: true}
         const updatedUser = {
             $set: {
-                status: activityStatus.status
+                status: activityStatus.status,
+                feedback: activityStatus.feedback
             }
         }
         const result = await activitiesCollection.updateOne(filter, updatedUser, options);
