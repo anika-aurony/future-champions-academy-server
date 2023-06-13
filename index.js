@@ -47,6 +47,21 @@ async function run() {
         res.send(result)
     } )
 
+    app.put('/activities/:id', async(req, res) =>{
+        const id = req.params.id;
+        const activityStatus = req.body;
+        console.log(id, activityStatus)
+        const filter = {_id: new ObjectId(id)}
+        const options = {upsert: true}
+        const updatedUser = {
+            $set: {
+                status: activityStatus.status
+            }
+        }
+        const result = await activitiesCollection.updateOne(filter, updatedUser, options);
+        res.send(result)
+    })
+
 
     // Send a ping to confirm a successful connection
     await client.db("admin").command({ ping: 1 });
