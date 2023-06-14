@@ -102,6 +102,14 @@ async function run() {
             const result = await cursor.toArray();
             res.send(result);
         })
+
+        app.post('/instructors', async (req, res) => {
+            const activity = req.body;
+
+            const result = await instructorsCollection.insertOne(activity);
+            res.send(result)
+        })
+        
         app.get('/activities', async (req, res) => {
             const cursor = activitiesCollection.find().sort({ totalStudents: -1 });
             const result = await cursor.toArray();
