@@ -24,11 +24,12 @@ const client = new MongoClient(uri, {
 async function run() {
     try {
         // Connect the client to the server	(optional starting in v4.7)
-        await client.connect();
+        // await client.connect();
 
         const instructorsCollection = client.db('FutureChampionsAcademyDB').collection('instructors');
         const activitiesCollection = client.db('FutureChampionsAcademyDB').collection('activities');
         const usersCollection = client.db('FutureChampionsAcademyDB').collection('users');
+        const cartCollection = client.db('FutureChampionsAcademyDB').collection('carts');
 
 
         app.get('/users', async (req, res) => {
@@ -38,7 +39,6 @@ async function run() {
 
         app.patch('/users/admin/:id', async (req, res) => {
             const id = req.params.id;
-            console.log(id);
             const filter = { _id: new ObjectId(id) };
             const updateDoc = {
                 $set: {
@@ -51,28 +51,26 @@ async function run() {
 
         })
 
-        app.get('/users/admin/:email',  async (req, res) => {
+        app.get('/users/admin/:email', async (req, res) => {
             const email = req.params.email;
             const query = { email: email }
             const user = await usersCollection.findOne(query);
-            console.log(user)
             const result = { admin: user?.role === 'admin' }
-            console.log(result)
             res.send(result);
-          })
+        })
 
 
-        app.get('/users/instructor/:email',  async (req, res) => {
+        app.get('/users/instructor/:email', async (req, res) => {
             const email = req.params.email;
             const query = { email: email }
             const user = await usersCollection.findOne(query);
             const result = { instructor: user?.role === 'instructor' }
             res.send(result);
-          })
+        })
 
         app.patch('/users/instructor/:id', async (req, res) => {
             const id = req.params.id;
-            console.log(id);
+
             const filter = { _id: new ObjectId(id) };
             const updateDoc = {
                 $set: {
@@ -120,7 +118,6 @@ async function run() {
         app.put('/activities/:id', async (req, res) => {
             const id = req.params.id;
             const activityStatus = req.body;
-            console.log(id, activityStatus)
             const filter = { _id: new ObjectId(id) }
             const options = { upsert: true }
             const updatedUser = {
@@ -133,6 +130,16 @@ async function run() {
             res.send(result)
         })
 
+        app.post('/carts', async (req, res) => {
+            const item = req.body;
+            const result = await cartCollection.insertOne(item);
+            res.send(result);
+        })
+
+        app.get('/carts', async (req, res) => {
+            const result = await cartCollection.find().toArray();
+            res.send(result);
+        });
 
         // Send a ping to confirm a successful connection
         await client.db("admin").command({ ping: 1 });
