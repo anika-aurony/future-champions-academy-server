@@ -53,9 +53,6 @@ async function run() {
 
         app.get('/users/admin/:email',  async (req, res) => {
             const email = req.params.email;
-      
-            
-      
             const query = { email: email }
             const user = await usersCollection.findOne(query);
             console.log(user)
@@ -67,14 +64,9 @@ async function run() {
 
         app.get('/users/instructor/:email',  async (req, res) => {
             const email = req.params.email;
-      
-            
-      
             const query = { email: email }
             const user = await usersCollection.findOne(query);
-            console.log(user)
             const result = { instructor: user?.role === 'instructor' }
-            console.log(result)
             res.send(result);
           })
 
@@ -113,7 +105,7 @@ async function run() {
             res.send(result);
         })
         app.get('/activities', async (req, res) => {
-            const cursor = activitiesCollection.find();
+            const cursor = activitiesCollection.find().sort({ totalStudents: -1 });
             const result = await cursor.toArray();
             res.send(result);
         })
