@@ -64,6 +64,20 @@ async function run() {
             res.send(result);
           })
 
+
+        app.get('/users/instructor/:email',  async (req, res) => {
+            const email = req.params.email;
+      
+            
+      
+            const query = { email: email }
+            const user = await usersCollection.findOne(query);
+            console.log(user)
+            const result = { instructor: user?.role === 'instructor' }
+            console.log(result)
+            res.send(result);
+          })
+
         app.patch('/users/instructor/:id', async (req, res) => {
             const id = req.params.id;
             console.log(id);
