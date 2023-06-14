@@ -28,7 +28,28 @@ async function run() {
 
     const instructorsCollection = client.db('FutureChampionsAcademyDB').collection('instructors');
     const activitiesCollection = client.db('FutureChampionsAcademyDB').collection('activities');
+    const usersCollection = client.db('FutureChampionsAcademyDB').collection('users');
 
+
+    app.get('/users',  async (req, res) => {
+        const result = await usersCollection.find().toArray();
+        res.send(result);
+      });
+
+    app.post('/users', async (req, res) => {
+        const user = req.body;
+        const query = { email: user.email }
+        const existingUser = await usersCollection.findOne(query);
+  
+        if (existingUser) {
+          return res.send({ message: 'user already exists' })
+        }
+  
+        const result = await usersCollection.insertOne(user);
+        res.send(result);
+      });
+    
+    
     app.get('/instructors', async(req, res)=>{
         const cursor = instructorsCollection.find();
         const result = await cursor.toArray();
